@@ -13,4 +13,12 @@ export class BucketsService {
     const newBucket = new this.bucketModel(bucket);
     return await newBucket.save();
   }
+
+  async listBuckets() {
+    return await this.bucketModel.find().exec();
+  }
+
+  async deleteBucket(bucketId: string) {
+    return await this.bucketModel.findByIdAndDelete(bucketId).exec();
+  }
 }
