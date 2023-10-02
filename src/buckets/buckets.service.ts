@@ -21,4 +21,8 @@ export class BucketsService {
   async deleteBucket(bucketId: string) {
     return await this.bucketModel.findByIdAndDelete(bucketId).exec();
   }
+
+  async updateBucket(data: Bucket, bucketId: string) {
+    return await this.bucketModel.findByIdAndUpdate(bucketId, data).exec();
+  }
 }

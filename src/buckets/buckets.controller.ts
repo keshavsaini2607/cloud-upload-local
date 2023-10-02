@@ -20,4 +20,9 @@ export class BucketsController {
   async deleteBucket(@Body() { bucketId }) {
     return await this.bucketService.deleteBucket(bucketId);
   }
+
+  @Post('update')
+  async updateBucket(@Body() { data, bucketId }) {
+    return await this.bucketService.updateBucket(data, bucketId);
+  }
 }
