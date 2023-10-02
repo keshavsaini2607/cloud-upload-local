@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Bucket } from './schema/bucket.schema';
 import * as mongoose from 'mongoose';
@@ -10,19 +10,43 @@ export class BucketsService {
   ) {}
 
   async createBucket(bucket: Bucket) {
-    const newBucket = new this.bucketModel(bucket);
-    return await newBucket.save();
+    try {
+      const newBucket = new this.bucketModel(bucket);
+      await newBucket.save();
+      return { message: 'Bucket created successfully' };
+    } catch (error) {
+      throw new Error('Failed to create the bucket: ' + error.message);
+    }
   }
 
   async listBuckets() {
-    return await this.bucketModel.find().exec();
+    try {
+      return await this.bucketModel.find().exec();
+    } catch (error) {
+      throw new NotFoundException('Buckets not found');
+    }
   }
 
   async deleteBucket(bucketId: string) {
-    return await this.bucketModel.findByIdAndDelete(bucketId).exec();
+    try {
+      const deletedBucket = await this.bucketModel
+        .findByIdAndDelete(bucketId)
+        .exec();
+      if (!deletedBucket) {
+        throw new NotFoundException('Bucket not found');
+      }
+      return { message: 'Bucket deleted successfully' };
+    } catch (error) {
+      throw new Error('Failed to delete the bucket: ' + error.message);
+    }
   }
 
   async updateBucket(data: Bucket, bucketId: string) {
-    return await this.bucketModel.findByIdAndUpdate(bucketId, data).exec();
+    try {
+      await this.bucketModel.findByIdAndUpdate(bucketId, data).exec();
+      return { message: 'Bucket updated successfully' };
+    } catch (error) {
+      throw new Error('Failed to update the bucket: ' + error.message);
+    }
   }
 }
