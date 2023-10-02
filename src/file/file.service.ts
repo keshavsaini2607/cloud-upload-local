@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { File } from './schema/file.schema';
 import * as mongoose from 'mongoose';
+import { ResponseHelper } from 'src/helpers/ResponseHelper';
 
 @Injectable()
 export class FileService {
@@ -16,7 +17,7 @@ export class FileService {
       newFile.name = formData.name;
       newFile.file = file.buffer;
       await newFile.save();
-      return { message: 'File saved successfully' };
+      return ResponseHelper(true, 'File saved successfully');
     } catch (error) {
       throw new Error('Failed to save the file: ' + error.message);
     }
@@ -36,7 +37,7 @@ export class FileService {
       if (!deletedFile) {
         throw new NotFoundException('File not found');
       }
-      return { message: 'File deleted successfully' };
+      return ResponseHelper(true, 'File deleted successfully');
     } catch (error) {
       throw new Error('Failed to delete the file: ' + error.message);
     }

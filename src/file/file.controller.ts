@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -19,6 +20,12 @@ export class FileController {
     @Body() formData: any,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    // Not allowing files larger than 1MB
+    if (file.size > 1024 * 1024) {
+      throw new BadRequestException(
+        'File size exceeds the allowed limit of 1MB',
+      );
+    }
     return await this.fileService.saveFile(formData, file);
   }
 
